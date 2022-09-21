@@ -13,31 +13,31 @@ persons = {
             "firstname": "pelle",
             "lastname": "svensson",
             "birth": get_birth(),
-            "adress": "hejgatan 1",
+            "address": "stockholm 1",
         },
         {
             "firstname": "olle",
             "lastname": "svensson",
             "birth": get_birth(),
-            "adress": "hejgatan 1",
+            "address": "goteborg 2",
         },
         {
             "firstname": "nisse",
             "lastname": "svensson",
             "birth": get_birth(),
-            "adress": "hejgatan 1",
+            "address": "mamlo 3",
         },
         {
             "firstname": "hakan",
             "lastname": "mild",
             "birth": get_birth(),
-            "adress": "hejgatan 1",
+            "address": "uppsala 4",
         },
         {
             "firstname": "thomas",
             "lastname": "brolin",
             "birth": get_birth(),
-            "adress": "hejgatan 1",
+            "address": "linkoping 5",
         },
     ]
 }

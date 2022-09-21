@@ -4,31 +4,31 @@
             "firstname": "pelle",
             "lastname": "svensson",
             "birth": 2002,
-            "adress": "hejgatan 1"
+            "address": "stockholm 1"
         },
         {
             "firstname": "olle",
             "lastname": "svensson",
             "birth": 1992,
-            "adress": "hejgatan 1"
+            "address": "goteborg 2"
         },
         {
             "firstname": "nisse",
             "lastname": "svensson",
             "birth": 2003,
-            "adress": "hejgatan 1"
+            "address": "mamlo 3"
         },
         {
             "firstname": "hakan",
             "lastname": "mild",
             "birth": 1982,
-            "adress": "hejgatan 1"
+            "address": "uppsala 4"
         },
         {
             "firstname": "thomas",
             "lastname": "brolin",
             "birth": 1990,
-            "adress": "hejgatan 1"
+            "address": "linkoping 5"
         }
     ]
 }
