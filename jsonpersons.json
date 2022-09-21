@@ -1,0 +1,34 @@
+{
+    "persons": [
+        {
+            "firstname": "pelle",
+            "lastname": "svensson",
+            "birth": 2002,
+            "adress": "hejgatan 1"
+        },
+        {
+            "firstname": "olle",
+            "lastname": "svensson",
+            "birth": 1992,
+            "adress": "hejgatan 1"
+        },
+        {
+            "firstname": "nisse",
+            "lastname": "svensson",
+            "birth": 2003,
+            "adress": "hejgatan 1"
+        },
+        {
+            "firstname": "hakan",
+            "lastname": "mild",
+            "birth": 1982,
+            "adress": "hejgatan 1"
+        },
+        {
+            "firstname": "thomas",
+            "lastname": "brolin",
+            "birth": 1990,
+            "adress": "hejgatan 1"
+        }
+    ]
+}

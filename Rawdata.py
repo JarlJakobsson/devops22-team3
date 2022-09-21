@@ -1,5 +1,4 @@
 import json
-from lib2to3.pgen2.token import NEWLINE
 from random import randint
 import sqlite3
 
