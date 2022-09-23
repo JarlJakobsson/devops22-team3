@@ -8,13 +8,13 @@ CREATE_TABLE_PERSON = """
                 )
                 """
 
-CREATE_TABLE_HOBBIES = '''
+CREATE_TABLE_HOBBIES = """
                 CREATE TABLE IF NOT EXISTS hobby(
                     hobbyid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     personid INTEGER NOT NULL,
                     hobbyname   TEXT NOT NULL,
                 FOREIGN KEY(personid) REFERENCES person(id)
-                )'''
+                )"""
 
 INSERT_PERSON_DATA = """
                 INSERT INTO person(
@@ -33,6 +33,7 @@ INSERT_HOBBY_DATA = """
             )
             VALUES (?, ?)
             """
+
 menu_text = """
 
     1. Load data from file
@@ -42,7 +43,7 @@ menu_text = """
     5. Add a hobby
     
     type q or Q to exit
-    
+
     """
 
 menu2_text = """
