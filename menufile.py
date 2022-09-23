@@ -10,6 +10,7 @@ class Menu:
     2. Print persons from database
     3. Delete person
     4. Update address
+    5. Add a hobby
     
     type q or Q to exit
     """
@@ -36,17 +37,14 @@ class Menu:
         elif choice == "1":
             with open("jsonpersons.json") as f:
                 json_persons = json.load(f)
-                mydudes = []
+                person_list = []
                 for p in json_persons["persons"]:
-                    mydudes.append(
-                        Person(p["firstname"], p["lastname"], p["birth"], p["address"])
-                    )
+                    person_list.append(Person(p["firstname"], p["lastname"], p["birth"], p["address"]))
                     sql_connection.execute(INSERT_DATA, tuple(p.values()))
             print("*** DATABASE LOADED ***")
 
         ### SECOND MENU START ###
         elif choice == "2":
-            list_all()
             print(
                 """
 
@@ -57,6 +55,7 @@ class Menu:
     3. Birthyear
     4. Address
     5. Print all
+    6. Print all persons with a hobby
     
     type q or Q to return to mainmenu
     """
@@ -114,6 +113,19 @@ class Menu:
             elif print_choice == "5":
                 print("*** HERE IS ALL DATA ***")
                 list_all()
+            
+            elif print_choice == "6":
+                cursor = sql_connection.cursor()
+                cursor.execute('''SELECT firstname, hobbyname 
+                                FROM person AS p 
+                                INNER JOIN hobby AS h 
+                                ON p.id = h.personid
+                                ORDER BY firstname 
+                ''')
+                sql_data = cursor.fetchall()
+                for e in sql_data:
+                    print(e)
+                pass
 
                 ### SECOND MENU END ###
 
@@ -135,6 +147,14 @@ class Menu:
                 sql_connection.execute(f"UPDATE person SET address = '{new_adress}' WHERE id = '{userinput}'")
             except:
                 except_msg()
+        
+        elif choice == "5":
+            list_all()
+            userid = int(input("Enter ID of person to add hobby: "))
+            input_hobby = input("Enter the name of the hobby: ")
+            sql_connection.execute(INSERT_HOBBY, (userid, input_hobby))
+            list_hobbies()
+            pass
 
 
 class Person:
@@ -150,7 +170,6 @@ class Person:
     def __repr__(self) -> str:
         return self.firstname
 
-
 CREATE_TABLE_PERSON = """
                 CREATE TABLE IF NOT EXISTS person(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -164,8 +183,8 @@ CREATE_TABLE_PERSON = """
 CREATE_TABLE_HOBBIES = '''
             CREATE TABLE IF NOT EXISTS hobby(
                 hobbyid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                hobbyname   TEXT NOT NULL,
                 personid INTEGER NOT NULL,
+                hobbyname   TEXT NOT NULL,
             FOREIGN KEY(personid) REFERENCES person(id)
             )'''
 
@@ -179,6 +198,14 @@ INSERT_DATA = """
             VALUES (?, ?, ?, ?)
             """
 
+INSERT_HOBBY = """
+            INSERT INTO hobby(
+                personid,
+                hobbyname
+            )
+            VALUES (?, ?)
+            """
+
 with sqlite3.connect(":memory:", isolation_level=None) as sql_connection:
     sql_connection.execute(CREATE_TABLE_PERSON)
     sql_connection.execute(CREATE_TABLE_HOBBIES)
@@ -190,7 +217,26 @@ def list_all():
     for e in sql_data:
         print(e)
 
+def list_hobbies():
+    cursor = sql_connection.cursor()
+    cursor.execute("SELECT * FROM hobby")
+    sql_data = cursor.fetchall()
+    for e in sql_data:
+        print(e)
+
 def except_msg():
     print("Something went wrong.")
 
 Menu().start_loop()
+
+# SELECT ArtistName, AlbumName 
+# FROM Artists AS a 
+#   INNER JOIN Albums AS b 
+#   ON a.ArtistId = b.ArtistId
+# ORDER BY ArtistName;
+
+# SELECT firstname, hobbyname 
+# FROM person AS p 
+#   INNER JOIN hobby AS h 
+#   ON a.id = b.id
+# ORDER BY firstname

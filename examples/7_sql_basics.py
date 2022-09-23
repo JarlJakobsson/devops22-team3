@@ -19,6 +19,6 @@ INSERT_DATA = '''
 
 with sqlite3.connect('basic_example.db', isolation_level=None) as conn:
     conn.execute(CREATE_TABLE_PERSON)
-    conn.execute(INSERT_DATA, ("Svensson"))
+    conn.execute(INSERT_DATA, ("Lena", "Svensson"))
 
 conn.close()
