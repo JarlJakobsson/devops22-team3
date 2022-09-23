@@ -2,8 +2,9 @@ import json
 import sqlite3
 
 
-class Menu:
 
+
+class Menu:
     menu_text = """
 
     1. Load data from file
@@ -31,10 +32,12 @@ class Menu:
             self.wait_for_user()
 
     def menu_commands(self, choice):
+        printbool = False
         if choice == "q" or choice == "Q":
             self.running = False
 
         elif choice == "1":
+            printbool = True
             with open("jsonpersons.json") as f:
                 json_persons = json.load(f)
                 person_list = []
@@ -111,21 +114,29 @@ class Menu:
                 input("Press any key to continue... ")
 
             elif print_choice == "5":
-                print("*** HERE IS ALL DATA ***")
-                list_all()
+                try:
+                    if printbool == False:
+                        print("Nothing to print")
+                    else:
+                        print("*** HERE IS ALL DATA ***")
+                        list_all()
+                except:
+                    print("Nothing to print")
             
             elif print_choice == "6":
-                cursor = sql_connection.cursor()
-                cursor.execute('''SELECT firstname, hobbyname 
-                                FROM person AS p 
-                                INNER JOIN hobby AS h 
-                                ON p.id = h.personid
-                                ORDER BY firstname 
-                ''')
-                sql_data = cursor.fetchall()
-                for e in sql_data:
-                    print(e)
-                pass
+                try:
+                    cursor = sql_connection.cursor()
+                    cursor.execute('''SELECT firstname, hobbyname 
+                                    FROM person AS p 
+                                    INNER JOIN hobby AS h 
+                                    ON p.id = h.personid
+                                    ORDER BY firstname
+                    ''')
+                    sql_data = cursor.fetchall()
+                    for e in sql_data:
+                        print(e)
+                except:
+                    except_msg()
 
                 ### SECOND MENU END ###
 
@@ -150,12 +161,13 @@ class Menu:
         
         elif choice == "5":
             list_all()
-            userid = int(input("Enter ID of person to add hobby: "))
-            input_hobby = input("Enter the name of the hobby: ")
-            sql_connection.execute(INSERT_HOBBY, (userid, input_hobby))
-            list_hobbies()
-            pass
-
+            try:
+                userid = int(input("Enter ID of person to add hobby: "))
+                input_hobby = input("Enter the name of the hobby: ")
+                sql_connection.execute(INSERT_HOBBY, (userid, input_hobby))
+                list_hobbies()
+            except:
+                except_msg()
 
 class Person:
     def __init__(self, firstname, lastname, birthyear, address):
@@ -163,6 +175,9 @@ class Person:
         self.lastname = lastname
         self.birthyear = birthyear
         self.address = address
+
+    def add_hobby(self, hobbyname):
+        self.hobby = hobbyname
 
     def __str__(self):
         return self.lastname
@@ -215,7 +230,10 @@ def list_all():
     cursor.execute("SELECT * FROM person")
     sql_data = cursor.fetchall()
     for e in sql_data:
-        print(e)
+        if bool(e) == True:
+            print("Database empty")
+        else:
+            print(e)
 
 def list_hobbies():
     cursor = sql_connection.cursor()
