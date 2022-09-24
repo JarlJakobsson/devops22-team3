@@ -1,24 +1,26 @@
 import json
 import sqlite3
+from textwrap import indent
 import hidden
+import Rawdata
 
+# Importing json, sqlite3, our "hidden" module and our Rawdata module
+
+# variable to keep loop running
 running = True
+# Empty list, preparing for our person objects
 person_list = []
 
-
-def user_choice():
-    if running == True:
-        return input("Enter your choice: ")
-
-
+# Function to help the user read from the terminal before new menu text
 def wait_for_user():
     input("Please press any key to continues.")
 
 
+# function to start our menu loop
 def start_loop():
     while running:
         print(hidden.menu_text)
-        choice = user_choice()
+        choice = input("Enter your choice: ")
         menu_commands(choice)
         wait_for_user()
 
@@ -33,6 +35,7 @@ def menu_commands(choice):
 
     elif choice == "1":
         try:
+            ## Trying to open
             with open("jsonpersons.json") as f:
                 json_persons = json.load(f)
                 for d in json_persons["persons"]:
@@ -70,7 +73,9 @@ def menu_commands(choice):
             try:
                 list_all()
                 lastname_input = input("Enter the last name: ").lower()
-                cursor.execute(f'SELECT * FROM person WHERE lastname = "{lastname_input}"')
+                cursor.execute(
+                    f'SELECT * FROM person WHERE lastname = "{lastname_input}"'
+                )
                 sql_data = cursor.fetchall()
                 for e in sql_data:
                     print(e)
@@ -87,6 +92,8 @@ def menu_commands(choice):
                 sql_data = cursor.fetchall()
                 for e in sql_data:
                     print(e)
+            except TypeError:
+                print("*** You didn't enter an integer ***")
             except:
                 except_msg()
 
@@ -94,11 +101,12 @@ def menu_commands(choice):
             try:
                 list_all()
                 address_input = input("Enter the address of the person: ").lower()
-                cursor.execute(f'SELECT * FROM person WHERE address = "{address_input}"')
+                cursor.execute(
+                    f'SELECT * FROM person WHERE address = "{address_input}"'
+                )
                 sql_data = cursor.fetchall()
                 for e in sql_data:
                     print(e)
-                input("Press any key to continue... ")
             except:
                 except_msg()
 
@@ -165,19 +173,23 @@ def menu_commands(choice):
         except:
             except_msg()
 
-
+# Function for printing all persons in database 
 def list_all():
     cursor = sql_connection.cursor()
     cursor.execute("SELECT * FROM person")
     sql_data = cursor.fetchall()
-    for e in sql_data:
-        print(e)
+    if len(sql_data) > 0:
+        for e in sql_data:
+            print(e)
+    else:
+        print("Nothing in database")
 
 
 def except_msg():
     print("\n*** Something went wrong. ***\n")
 
-
+# Function for updating our person list. Fetches evrything it database,
+# clears person_list and adds evrything as class objecs again
 def update_personlist():
     cursor = sql_connection.cursor()
     cursor.execute("SELECT * FROM person")
@@ -189,6 +201,7 @@ def update_personlist():
 
 
 class Person:
+    # constructor for our Person class
     def __init__(self, id, firstname, lastname, birthyear, address):
         self.id = id
         self.firstname = firstname
@@ -197,18 +210,33 @@ class Person:
         self.address = address
         self.hobby = "Has no hobby."
 
+    # Method to add a hobby to our persons
     def add_hobby(self, hobbyname):
-        self.hobby = str(hobbyname)
+        self.hobby = hobbyname
 
-    def __str__(self):
-        return self.lastname
-
+    # How our classes will represent themselves, allowing them to look better when we view them
     def __repr__(self) -> str:
         return f"\nID: {self.id} | Name: {self.firstname} {self.lastname} | Birthyear: {self.birthyear} | Address: {self.address} | Hobby: {self.hobby}"
 
+# Opens our rawdata and creates a jsonfile with the data  and lets the user decide where to save it.       
+try:
+    input_filename = input("Welcome\nWhere do you want to save rawdata?\nEnter path and end with .json: ")
+    with open((input_filename), 'w+') as f:
+            f.write(json.dumps(Rawdata.persons, indent = 4)) # indent = 4 to help with human readability
+            print(f"\n*** {input_filename} CREATED ***")
+            wait_for_user()
+except:
+    except_msg()
 
-with sqlite3.connect(":memory:", isolation_level=None) as sql_connection:
-    sql_connection.execute(hidden.CREATE_TABLE_PERSON)
-    sql_connection.execute(hidden.CREATE_TABLE_HOBBIES)
+# Creates a Database and a connection to it, wich we store in sql_connection
+# Creates our table for persons in our database
+# Creates our table for hobbys in our database
+try:
+    with sqlite3.connect(":memory:", isolation_level=None) as sql_connection:
+        sql_connection.execute(hidden.CREATE_TABLE_PERSON)
+        sql_connection.execute(hidden.CREATE_TABLE_HOBBIES)
+except:
+    except_msg()
 
+# Starts our loop
 start_loop()
