@@ -1,5 +1,4 @@
-# function to creata a person table in our sql database with id as primary key
-
+# function to create a person table in our sql database with id as primary key
 CREATE_TABLE_PERSON = """
                 CREATE TABLE IF NOT EXISTS person(
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -11,7 +10,7 @@ CREATE_TABLE_PERSON = """
                 """
 
 # function to create a hobby table in our sql database, with hobbyid as primary key
-# and personid as a forgin key that refrences to id in person table        
+# and personid as a forgein key that references to id in person table        
 CREATE_TABLE_HOBBIES = """
                 CREATE TABLE IF NOT EXISTS hobby(
                     hobbyid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -20,7 +19,7 @@ CREATE_TABLE_HOBBIES = """
                 FOREIGN KEY(personid) REFERENCES person(id)
                 )"""
 
-# function to insert data into our person table. It want 4 values
+# function to insert data into our person table with a tuple with 4 values
 INSERT_PERSON_DATA = """
                 INSERT INTO person(
                     firstname,
@@ -31,7 +30,7 @@ INSERT_PERSON_DATA = """
                 VALUES (?, ?, ?, ?)
                 """
 
-# function to insert data into our hobby table. Takes 2 values
+# function to insert data into our hobby table with a tuple with 2 values
 INSERT_HOBBY_DATA = """
             INSERT INTO hobby(
                 personid,

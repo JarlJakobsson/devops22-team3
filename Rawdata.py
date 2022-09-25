@@ -1,7 +1,7 @@
 # Importing randint from random
 from random import randint
 
-# Method to randomize birth for our rawdata
+# Method to randomize birthyear for our rawdata
 def get_birth():
     return randint(1960, 2005)
 
