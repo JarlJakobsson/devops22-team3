@@ -3,9 +3,9 @@ import sqlite3
 import hidden
 import Rawdata
 
-# Importing json, sqlite3, our "hidden" module and our Rawdata module
+# Importing modules; json, sqlite3, hidden and Rawdata
 
-# Empty list, preparing for our person objects
+# Empty list, preparing for person objects
 person_list = []
 
 # Function to help the user read from the terminal before new menu text
@@ -13,21 +13,23 @@ def wait_for_user():
     input("\nPlease press any key to continues.")
 
 # function to start our menu loop
-def start_loop(running = True):
+def start_loop():
+    running = True
     while running:
         print(hidden.menu_text)
         choice = input("\nEnter your choice: ")
         menu_commands(choice)
+        if choice == "q":
+            running = False
         wait_for_user()
 
 def menu_commands(choice):
     try:
-        running = True
         # CREATING CURSOR TO OUR SQL CONNECTION
         cursor = sql_connection.cursor()
 
         if choice == "q" or choice == "Q":
-            return running == False
+            return "q"
 
         elif choice == "1":
             # Loads data
