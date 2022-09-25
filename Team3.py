@@ -33,16 +33,18 @@ def menu_commands(choice):
             return running == False
 
         elif choice == "1":
-                ## ändra till input
-                with open("jsonpersons.json") as f:
-                    json_persons = json.load(f)
-                    for d in json_persons["persons"]:
-                        ## p will be a dict with first:value, last:value, birthyear: value, address: value.
-                        ## we will then only take the values by doing p.values and add them as values
-                        ##  to our database with the INSERT_PERSON_DATA function we have created in hidden
-                        sql_connection.execute(hidden2.INSERT_PERSON_DATA, tuple(d.values()))
-                    update_personlist()
-                print("\n*** DATABASE LOADED ***\n")
+            ## ändra till input
+            with open("jsonpersons.json") as f:
+                json_persons = json.load(f)
+                for d in json_persons["persons"]:
+                    ## p will be a dict with first:value, last:value, birthyear: value, address: value.
+                    ## we will then only take the values by doing p.values and add them as values
+                    ##  to our database with the INSERT_PERSON_DATA function we have created in hidden
+                    sql_connection.execute(
+                        hidden.INSERT_PERSON_DATA, tuple(d.values())
+                    )
+                update_personlist()
+            print("\n*** DATABASE LOADED ***\n")
 
         ### SECOND MENU START ###
         elif choice == "2":
@@ -54,33 +56,24 @@ def menu_commands(choice):
 
             elif print_choice == "1":
                 # Query first name
-                    list_all()
-                    query_print("firstname")
+                list_all()
+                query_print("firstname")
 
             elif print_choice == "2":
                 # Query last name
-                try:
-                    list_all()
-                    query_print("lastname")
-                except:
-                    except_msg()
+                list_all()
+                query_print("lastname")
 
             elif print_choice == "3":
                 # Query birthyear
-                try:
-                    list_all()
-                    query_print("birthyear")
-                except:
-                    except_msg()
+                list_all()
+                query_print("birthyear")
 
             elif print_choice == "4":
                 # Query address
-                try:
-                    list_all()
-                    query_print("address")
-                except:
-                    except_msg()
-            
+                list_all()
+                query_print("address")
+
             # Query and print all with data from fetchall (Excercise 2)
             elif print_choice == "5":
                 cursor = sql_connection.cursor()
@@ -94,60 +87,50 @@ def menu_commands(choice):
 
             elif print_choice == "6":
                 # Using a inner join to print out evryone who has a hobby
-                try:
-                    cursor.execute(
-                        """
+                cursor.execute(
+                    """
                     SELECT firstname, lastname, hobbyname 
                     FROM person AS p 
                     INNER JOIN hobby AS h 
                     ON p.id = h.personid
                     ORDER BY firstname
                     """
-                    )
-                    sql_data = cursor.fetchall()
-                    print("\n*** PEOPLE WITH HOBBIES ***\n")
-                    for e in sql_data:
-                        print(e)
-                except:
-                    except_msg()
+                )
+                sql_data = cursor.fetchall()
+                print("\n*** PEOPLE WITH HOBBIES ***\n")
+                for e in sql_data:
+                    print(e)
 
-                ### SECOND MENU END ###
+            ### SECOND MENU END ###
 
         elif choice == "3":
-            try:
-                list_all()
-                input_id = int(input("\nWho do you want to delete? Enter ID: "))
-                # Using DELETE to delete a person from the database
-                sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
-                for p in person_list:
-                    # Checks if id matches any ids in the class list, when match,
-                    # prints out who got deleted
-                    if p.id == input_id:
-                        print(f"\n *** {p.firstname} {p.lastname} has been deleted ***")
-                # Calls update_personlist
-                update_personlist()
-
-            except:
-                except_msg()
+            list_all()
+            input_id = int(input("\nWho do you want to delete? Enter ID: "))
+            # Using DELETE to delete a person from the database
+            sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
+            for p in person_list:
+                # Checks if id matches any ids in the class list, when match,
+                # prints out who got deleted
+                if p.id == input_id:
+                    print(f"\n *** {p.firstname} {p.lastname} has been deleted ***")
+            # Calls update_personlist
+            update_personlist()
 
         elif choice == "4":
             # Update address
-            try:
-                list_all()
-                input_id = input("\nWhos address do you want to Update? Enter ID: ")
-                new_adress = input("\nEnter the new address: ")
-                # Using SET to update address in database
-                sql_connection.execute(
-                    f"UPDATE person SET address = '{new_adress}' WHERE id = '{input_id}'"
-                )
-                for p in person_list:
-                    # Checks if id matches any ids in the class list, when match,
-                    # adds a new address
-                    if p.id == input_id:
-                        p.address = new_adress
-                print("\n*** Address updated ***\n")
-            except:
-                except_msg()
+            list_all()
+            input_id = input("\nWhos address do you want to Update? Enter ID: ")
+            new_adress = input("\nEnter the new address: ")
+            # Using SET to update address in database
+            sql_connection.execute(
+                f"UPDATE person SET address = '{new_adress}' WHERE id = '{input_id}'"
+            )
+            for p in person_list:
+                # Checks if id matches any ids in the class list, when match,
+                # adds a new address
+                if p.id == input_id:
+                    p.address = new_adress
+            print("\n*** Address updated ***\n")
 
         elif choice == "5":
             # Add hobby
@@ -163,8 +146,8 @@ def menu_commands(choice):
                 if p.id == input_id:
                     p.add_hobby(input_hobby)
                     print(p)
-    except:
-        except_msg()
+    except Exception as error_msg:
+        print(error_msg)
 
 
 # Function to list all in current persons
@@ -174,9 +157,11 @@ def list_all():
     else:
         print("\n*** No data available ***\n")
 
+
 # Function for error message
 def except_msg():
     print("\n*** Something went wrong. ***\n")
+
 
 # Function to print our database query using our person list
 def query_print(column):
@@ -191,9 +176,9 @@ def query_print(column):
     else:
         for e in sql_data:
             for p in person_list:
-                    # Checks if id matches any ids in the class list, when match, prints out the class object
-                    if p.id == e[0]:
-                        print(p)
+                # Checks if id matches any ids in the class list, when match, prints out the class object
+                if p.id == e[0]:
+                    print(p)
 
 
 # Function for updating our person list. Fetches evrything row from the person table database,
@@ -205,7 +190,7 @@ def update_personlist():
     person_list.clear()
     for e in sql_data:
         # loops through evry tupple in sql_data and uses their values to make class objecs
-        # e[0] = id, e[1] = firstname, e[2] = lastname, e[3] = birthyear, e[4] = address  
+        # e[0] = id, e[1] = firstname, e[2] = lastname, e[3] = birthyear, e[4] = address
         person_list.append(Person(e[0], e[1], e[2], e[3], e[4]))
     print("\n*** PERSONLIST UPDATED ***\n")
 
@@ -222,13 +207,13 @@ class Person:
     # Method to add a hobby to our persons
     # If no hobby exists, removes "Has no hobby" and adds hobbyname
     def add_hobby(self, hobbyname):
-        if self.add_hobby[0] == "Has no hobby":
-            self.add_hobby.pop()
+        if self.hobby[0] == "Has no hobby":
+            self.hobby.pop()
             self.hobby.append(hobbyname)
         else:
             self.hobby.append(hobbyname)
 
-    # How our class will print itself    
+    # How our class will print itself
     def __str__(self) -> str:
         return f"\nID: {self.id} | Name: {self.firstname} {self.lastname} | Birthyear: {self.birthyear} | Address: {self.address} | Hobby: {self.hobby}"
 
@@ -248,18 +233,18 @@ try:
         )  # indent = 4 to help with readability
         print(f"\n*** {input_filename} CREATED ***")
         wait_for_user()
-except:
-    except_msg()
+except Exception as error_msg:
+    print(error_msg)
 
 # Creates a Database and a connection to it, wich we store in sql_connection
 # Creates our table for persons in our database
 # Creates our table for hobbys in our database
-try:
+try: ########################################## DONT FORGET SWAP MEMORY #######################################################
     with sqlite3.connect(":memory:", isolation_level=None) as sql_connection:
         sql_connection.execute(hidden.CREATE_TABLE_PERSON)
         sql_connection.execute(hidden.CREATE_TABLE_HOBBIES)
-except:
-    except_msg()
+except Exception as error_message:
+    print(error_message)
 
 # Starts our loop
 start_loop()
