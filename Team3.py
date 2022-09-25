@@ -52,22 +52,18 @@ def menu_commands(choice):
 
             elif print_choice == "1":
                 # Query first name
-                list_all()
                 query_print("firstname")
 
             elif print_choice == "2":
                 # Query last name
-                list_all()
                 query_print("lastname")
 
             elif print_choice == "3":
                 # Query birthyear
-                list_all()
                 query_print("birthyear")
 
             elif print_choice == "4":
                 # Query address
-                list_all()
                 query_print("address")
 
             # Query and print all with data from fetchall (Excercise 2)
@@ -100,48 +96,58 @@ def menu_commands(choice):
                         print(e)
                 else:
                     print("\n*** NO PERSONS HAVE ANY HOBBIES ***\n")
+            else:
+                print(f"\n{print_choice} is not a valid choice.\n\n*** Returning to Main menu ***")
+                return "q"
 
             ### SECOND MENU END ###
 
         elif choice == "3":
             # Delete a person
             list_all()
-            input_id = int(input("\nWho do you want to delete? Enter ID: "))
-            # Using DELETE to delete a person from the database
-            sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
-            for p in person_list:
-                # Checks if id matches any ids in the class list, when match, prints out who got deleted
-                if p.id == input_id:
-                    print(f"\n *** {p.firstname} {p.lastname} has been deleted ***")
-            update_personlist()
+            input_id = input("\nWho do you want to delete? Enter ID: ")
+            if id_exist_check(input_id) == True:
+                # Using DELETE to delete a person from the database
+                sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
+                for p in person_list:
+                    # Checks if id matches any ids in the class list, when match, prints out who got deleted
+                    if p.id == input_id:
+                        print(f"\n *** {p.firstname} {p.lastname} has been deleted ***")
+                update_personlist()
 
         elif choice == "4":
             # Update address
             list_all()
             input_id = input("\nWhos address do you want to Update? Enter ID: ")
-            new_adress = input("\nEnter the new address: ")
-            # Using SET to update address in database
-            sql_connection.execute(f"UPDATE person SET address = '{new_adress}' WHERE id = '{input_id}'")
-            for p in person_list:
-                # Checks if id matches any ids in the class list, when match, updates new address
-                if p.id == input_id:
-                    p.address = new_adress
-            print("\n*** Address updated ***\n")
+            if id_exist_check(input_id) == True:
+                new_adress = input("\nEnter the new address: ")
+                # Using SET to update address in database
+                sql_connection.execute(f"UPDATE person SET address = '{new_adress}' WHERE id = '{input_id}'")
+                for p in person_list:
+                    # Checks if id matches any ids in the class list, when match, updates new address
+                    if p.id == input_id:
+                        p.address = new_adress
+                print("\n*** Address updated ***\n")
 
         elif choice == "5":
             # Add hobby
             list_all()
-            input_id = int(input("\nEnter ID of person to add hobby to: "))
-            input_hobby = input("\nEnter the name of the hobby: ")
-            # Using INSERT_HOBBY_DATA to add data to hobby table
-            sql_connection.execute(hidden.INSERT_HOBBY_DATA, (input_id, input_hobby))
-            print("\n*** Added Hobby ***\n")
-            # Checks if id matches any ids in the class list, when match,
-            # call add_hobby method with input_hobby as argument to add a hobby
-            for p in person_list:
-                if p.id == input_id:
-                    p.add_hobby(input_hobby)
-                    print(p)
+            input_id = input("\nEnter ID of person to add hobby to: ")
+            if id_exist_check(input_id) == True:
+                input_hobby = input("\nEnter the name of the hobby: ")
+                # Using INSERT_HOBBY_DATA to add data to hobby table
+                sql_connection.execute(hidden.INSERT_HOBBY_DATA, (input_id, input_hobby))
+                print("\n*** Added Hobby ***\n")
+                # Checks if id matches any ids in the class list, when match,
+                # call add_hobby method with input_hobby as argument to add a hobby
+                for p in person_list:
+                    if p.id == input_id:
+                        p.add_hobby(input_hobby)
+                        print(p)
+        else:
+            print(f"\n{choice} is not a valid choice.\n\n*** Returning to Main menu ***")
+            return "q"
+
     except Exception as error_msg:
         print(error_msg)
 
@@ -156,6 +162,7 @@ def list_all():
 
 # Function to print our database query using our person list
 def query_print(column):
+    list_all() # Listing all persons to increase userfriendlyness
     userinput = input(f"\nEnter the {column} you want to query: \n")
     cursor = sql_connection.cursor()
     # Selects every row where the user input exists in the specified column
@@ -184,6 +191,16 @@ def update_personlist():
         # e[0] = id, e[1] = firstname, e[2] = lastname, e[3] = birthyear, e[4] = address
         person_list.append(Person(e[0], e[1], e[2], e[3], e[4]))
     print("\n*** PERSONLIST UPDATED ***\n")
+
+def id_exist_check(input_id):
+    cursor = sql_connection.cursor()
+    cursor.execute(f'SELECT * FROM person WHERE "id" = "{input_id}"')
+    sql_data = cursor.fetchall()
+    if len(sql_data) > 0:
+        return True
+    else:
+        print(f"\nID: '{input_id}' doesn't exist.\n\n *** Returning to Main menu ***")
+        return False
 
 
 class Person:

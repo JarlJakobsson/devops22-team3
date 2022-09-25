@@ -43,7 +43,7 @@ INSERT_HOBBY_DATA = """
 menu_text = """
 
     1. Load data from file
-    2. Print persons from database
+    2. Open print menu
     3. Delete person
     4. Update address
     5. Add a hobby
