@@ -1,43 +1,42 @@
-import json
+# Importing randint from random
 from random import randint
-import sqlite3
 
-
+# Method to randomize birth for our rawdata
 def get_birth():
     return randint(1960, 2005)
 
-
+# Our rawdata saved as a dict in persons, with 1 key, persons, that has a value of a list with dicts.
 persons = {
     "persons": [
         {
-            "firstname": "pelle",
-            "lastname": "svensson",
-            "birth": get_birth(),
-            "address": "stockholm 1",
+            "firstname": "thomas",
+            "lastname": "ravelli",
+            "birthyear": get_birth(),
+            "address": "stockholm 12",
         },
         {
-            "firstname": "olle",
-            "lastname": "svensson",
-            "birth": get_birth(),
-            "address": "goteborg 2",
+            "firstname": "mats",
+            "lastname": "sundin",
+            "birthyear": get_birth(),
+            "address": "kiruna 26",
         },
         {
-            "firstname": "nisse",
-            "lastname": "svensson",
-            "birth": get_birth(),
-            "address": "mamlo 3",
+            "firstname": "martin",
+            "lastname": "dahlin",
+            "birthyear": get_birth(),
+            "address": "visby 31",
         },
         {
             "firstname": "hakan",
             "lastname": "mild",
-            "birth": get_birth(),
-            "address": "uppsala 4",
+            "birthyear": get_birth(),
+            "address": "uppsala 43",
         },
         {
             "firstname": "thomas",
             "lastname": "brolin",
-            "birth": get_birth(),
-            "address": "linkoping 5",
+            "birthyear": get_birth(),
+            "address": "huddinge 57",
         },
     ]
 }
