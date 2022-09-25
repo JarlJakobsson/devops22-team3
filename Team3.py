@@ -51,11 +51,12 @@ def menu_commands(choice):
     elif choice == "2":
         print(hidden.menu2_text)
 
-        print_choice = input("\nEnter choice: ")
+        print_choice = input("\Enter choice: ")
         if print_choice == "q" or choice == "Q":
             print("\n*** Returning to mainmenu ***\n")
 
         elif print_choice == "1":
+            # Query first name
             try:
                 list_all()
                 query_print("firstname")
@@ -63,20 +64,15 @@ def menu_commands(choice):
                 except_msg()
 
         elif print_choice == "2":
+            # Query last name
             try:
                 list_all()
                 query_print("lastname")
-                # lastname_input = input("Enter the last name: ").lower()
-                # cursor.execute(
-                #     f'SELECT * FROM person WHERE lastname = "{lastname_input}"'
-                # )
-                # sql_data = cursor.fetchall()
-                # for e in sql_data:
-                #     print(e)
             except:
                 except_msg()
 
         elif print_choice == "3":
+            # Query birthyear
             try:
                 list_all()
                 query_print("birthyear")
@@ -84,12 +80,14 @@ def menu_commands(choice):
                 except_msg()
 
         elif print_choice == "4":
+            # Query address
             try:
                 list_all()
                 query_print("address")
             except:
                 except_msg()
-
+        
+        # Query and print all with data from fetchall (Excercise 2)
         elif print_choice == "5":
             cursor = sql_connection.cursor()
             cursor.execute("SELECT * FROM person")
@@ -97,8 +95,11 @@ def menu_commands(choice):
             if len(sql_data) > 0:
                 for e in sql_data:
                     print(e)
+            else:
+                print("\n*** NO DATA AVAILABLE ***\n")
 
         elif print_choice == "6":
+            # Using a inner join to print out evryone who has a hobby
             try:
                 cursor.execute(
                     """
@@ -124,12 +125,12 @@ def menu_commands(choice):
             input_id = int(input("\nWho do you want to delete? Enter ID: "))
             # Using DELETE to delete a person from the database
             sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
-            print(f"\n *** Person {input_id} has been deleted ***")
             for p in person_list:
                 # Checks if id matches any ids in the class list, when match,
                 # prints out who got deleted
                 if p.id == input_id:
                     print(f"\n *** {p.firstname} {p.lastname} has been deleted ***")
+            # Calls update_personlist
             update_personlist()
 
         except:
@@ -212,7 +213,7 @@ def update_personlist():
         # loops through evry tupple in sql_data and uses their values to make class objecs
         # e[0] = id, e[1] = firstname, e[2] = lastname, e[3] = birthyear, e[4] = address  
         person_list.append(Person(e[0], e[1], e[2], e[3], e[4]))
-    print(person_list)
+    print("\n*** PERSONLIST UPDATED ***\n")
 
 
 class Person:
@@ -223,11 +224,16 @@ class Person:
         self.lastname = lastname
         self.birthyear = birthyear
         self.address = address
-        self.hobby = "Has no hobby."
+        self.hobby = ["Has no hobby"]
 
     # Method to add a hobby to our persons
+    # If no hobby exists, removes "Has no hobby" and adds hobbyname
     def add_hobby(self, hobbyname):
-        self.hobby = hobbyname
+        if self.add_hobby[0] == "Has no hobby":
+            self.add_hobby.pop()
+            self.hobby.append(hobbyname)
+        else:
+            self.hobby.append(hobbyname)
 
     # How our class will print itself    
     def __str__(self) -> str:
