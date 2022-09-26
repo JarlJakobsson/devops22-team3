@@ -105,7 +105,7 @@ def menu_commands(choice):
         elif choice == "3":
             # Delete a person
             list_all()
-            input_id = input("\nWho do you want to delete? Enter ID: ")
+            input_id = int(input("\nWho do you want to delete? Enter ID: "))
             if id_exist_check(input_id) == True:
                 # Using DELETE to delete a person from the database
                 sql_connection.execute(f"DELETE FROM person WHERE id = '{input_id}'")
@@ -118,13 +118,11 @@ def menu_commands(choice):
         elif choice == "4":
             # Update address
             list_all()
-            input_id = input("\nWhos address do you want to Update? Enter ID: ")
+            input_id = int(input("\nWhos address do you want to Update? Enter ID: "))
             if id_exist_check(input_id) == True:
-                new_adress = input("\nEnter the new address: ")
-                # Using SET to update address in database
+                new_adress = input("\nEnter the new address: ")# Using SET to update address in database
                 sql_connection.execute(f"UPDATE person SET address = '{new_adress}' WHERE id = '{input_id}'")
                 for p in person_list:
-                    # Checks if id matches any ids in the class list, when match, updates new address
                     if p.id == input_id:
                         p.address = new_adress
                 print("\n*** Address updated ***\n")
@@ -132,7 +130,7 @@ def menu_commands(choice):
         elif choice == "5":
             # Add hobby
             list_all()
-            input_id = input("\nEnter ID of person to add hobby to: ")
+            input_id = int(input("\nEnter ID of person to add hobby to: "))
             if id_exist_check(input_id) == True:
                 input_hobby = input("\nEnter the name of the hobby: ")
                 # Using INSERT_HOBBY_DATA to add data to hobby table
@@ -249,5 +247,4 @@ try:
         sql_connection.execute(hidden.CREATE_TABLE_HOBBIES)
 except Exception as error_message:
     print(error_message)
-
 start_loop()
