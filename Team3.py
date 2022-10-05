@@ -1,5 +1,6 @@
 import json
 import sqlite3
+# Shouldn't name this hidden, better with constants
 import hidden
 import Rawdata
 
@@ -10,8 +11,10 @@ person_list = []
 
 # Function to help the user read from the terminal before new menu text
 def wait_for_user():
+    # M: A oneliner function like this is almost unnecessary (unless extended with more code later)
     input("\nPlease press any key to continues.")
 
+# M: Good use of comments spread around the code
 # function to start our menu loop
 def start_loop():
     running = True
@@ -21,6 +24,7 @@ def start_loop():
         menu_commands(choice)
         if choice == "q":
             running = False
+        # M: Personally I felt that this need to press any key after every command is a bit unnecessary
         wait_for_user()
 
 def menu_commands(choice):
@@ -32,12 +36,15 @@ def menu_commands(choice):
             return "q"
 
         elif choice == "1":
+            # M: Code would be a bit cleaner if each choice called a function instead of including all the code here,
+            # because currently the if-else clause gets very large
             # Loads data
             with open(input("\nEnter the name of the file to load: ")) as f:  # Loads all data from the json file and saves it as f
                 json_persons = json.load(f)  # Takes the json data and stores as json_person
                 for d in json_persons["persons"]:
                     ## d will be a dict with first:value, last:value, birthyear: value, address: value.
                     ## takes the values with d.values and adding them as values for hidden.INSERT_PERSON_DATA
+                    # M: Would be a little better to insert all at once with executemany, but would mean you have to convert json_persons["persons"] to list of lists first.
                     sql_connection.execute(hidden.INSERT_PERSON_DATA, tuple(d.values()))
                 update_personlist()
             print("\n*** DATABASE LOADED ***\n")
@@ -154,6 +161,7 @@ def menu_commands(choice):
 
 # Function to list all in current persons from person_list
 def list_all():
+    # This would normally be written as "if not person_list:" because an empty list counts as false.
     if not person_list == []:
         print(person_list)
     else:
@@ -210,6 +218,9 @@ class Person:
         self.lastname = lastname
         self.birthyear = birthyear
         self.address = address
+        # M: It's often better to represent "nothing" of something simply with an empty list or None.
+        # This "Has no hobby" can look like just another hobby to other code and may cause bugs.
+        # When an empty hobby list is printed, such as in __str__, you could use an if clause to print "Has no hobby" instead of printing "Hobby: []"
         self.hobby = ["Has no hobby"]
 
     # Method to add a hobby to our persons
@@ -232,6 +243,7 @@ class Person:
 
 # Opens our rawdata and creates a jsonfile with the data  and lets the user decide where to save it.
 try:
+    # M: This creation maybe only should happen once, not every time the program starts.
     input_filename = input( "Welcome\nWhere do you want to save rawdata?\nEnter path and end with .json: ")
     with open((input_filename), "w+") as f:
         f.write(json.dumps(Rawdata.persons, indent=4))  # indent = 4 to help with readability

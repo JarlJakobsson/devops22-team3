@@ -39,6 +39,8 @@ INSERT_HOBBY_DATA = """
             VALUES (?, ?)
             """
 
+# As these are also constants, should probably name them with CAPITAL letters. Then it's also
+# better to name them for their purpose rather than just menu1 and 2, e.g. top_menu, print_menu
 # Main menu text saved as a variable
 menu_text = """
 
